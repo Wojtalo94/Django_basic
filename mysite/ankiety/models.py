@@ -6,8 +6,20 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
 
+
 class Choice(models.Model):
     # czyli mamy tabelę Choice z polami question, choice_text i votes
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
+
+
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager,self).get_queryset().filter(status='published')
+    
+
+class Post(models.Model):
+    # ...
+    objects = models.Manager() # Menedżer domyślny.
+    published = PublishedManager() # Menedżer niestandardowy.
